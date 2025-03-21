@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - ReferralPro{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>Profile Settings</h1>
+        <p>Manage your account information and preferences</p>
+    </div>
+    
+    <div class="profile-content">
+        <div class="profile-sidebar">
+            <div class="profile-avatar">
+                <div class="avatar-circle">
+                    {{ current_user.username[0].upper() }}
+                </div>
+                <button class="change-avatar-btn">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            
+            <div class="user-details">
+                <h3>{{ current_user.username }}</h3>
+                <p>{{ current_user.email }}</p>
+                <p class="joined-date">Joined {{ current_user.created_at.strftime('%B %Y') }}</p>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="active" data-target="account-section">
+                        <i class="fas fa-user"></i>
+                        <span>Account</span>
+                    </li>
+                    <li data-target="referrals-section">
+                        <i class="fas fa-users"></i>
+                        <span>Referrals</span>
+                    </li>
+                    <li data-target="rewards-section">
+                        <i class="fas fa-gift"></i>
+                        <span>Rewards</span>
+                    </li>
+                    <li data-target="notifications-section">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </li>
+                    <li data-target="security-section">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Security</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="profile-sections">
+            <div id="account-section" class="profile-section active">
+                <div class="section-header">
+                    <h2>Account Information</h2>
+                    <p>Manage your personal information</p>
+                </div>
+                
+                <form class="profile-form">
+                    <div class="form-group">
+                        <label for="update-username">Username</label>
+                        <input type="text" id="update-username" value="{{ current_user.username }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="update-email">Email</label>
+                        <input type="email" id="update-email" value="{{ current_user.email }}">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="update-bio">Bio</label>
+                        <textarea id="update-bio" rows="3" placeholder="Tell us about yourself"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="referrals-section" class="profile-section">
+                <div class="section-header">
+                    <h2>Referral Information</h2>
+                    <p>Manage your referral link and preferences</p>
+                </div>
+                
+                <div class="referral-info">
+                    <div class="info-group">
+                        <label>Your Referral Link</label>
+                        <div class="link-display">
+                            <span id="referralLink">{{ request.host_url }}register?ref={{ current_user.referral_code }}</span>
+                            <button id="copyLink" class="btn btn-icon">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <p class="help-text">Share this link with friends to invite them to Onference.</p>
+                    </div>
+                    
+                    <div class="info-group">
+                        <label>Total Referrals</label>
+                        <p>{{ referrals|length if referrals else 0 }}</p>
+                    </div>
+                    
+                    {% if referrer %}
+                    <div class="info-group">
+                        <label>Referred By</label>
+                        <p>{{ referrer.username }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div id="rewards-section" class="profile-section">
+                <div class="section-header">
+                    <h2>Rewards</h2>
+                    <p>View and redeem your rewards</p>
+                </div>
+                
+                <div class="rewards-overview">
+                    <div class="reward-card">
+                        <div class="reward-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Available Balance</h3>
+                            <p class="reward-value">$0.00</p>
+                        </div>
+                    </div>
+                    
+                    <div class="reward-card">
+                        <div class="reward-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Lifetime Earnings</h3>
+                            <p class="reward-value">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="reward-history">
+                    <h3>Reward History</h3>
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <p>No reward history yet</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="notifications-section" class="profile-section">
+                <div class="section-header">
+                    <h2>Notification Settings</h2>
+                    <p>Manage how you receive notifications</p>
+                </div>
+                
+                <div class="notification-settings">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Email Notifications</h3>
+                            <p>Receive updates via email</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>New Referral Alerts</h3>
+                            <p>Get notified when someone uses your referral code</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Reward Updates</h3>
+                            <p>Get notified about reward status changes</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Marketing Communications</h3>
+                            <p>Receive promotional offers and updates</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="security-section" class="profile-section">
+                <div class="section-header">
+                    <h2>Security Settings</h2>
+                    <p>Manage your account security</p>
+                </div>
+                
+                <div class="security-settings">
+                    <div class="setting-group">
+                        <h3>Change Password</h3>
+                        
+                        <form class="security-form">
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password" placeholder="••••••••">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password" placeholder="••••••••">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password" placeholder="••••••••">
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <h3>Two-Factor Authentication</h3>
+                        <p>Add an extra layer of security to your account</p>
+                        
+                        <div class="setting-action">
+                            <button class="btn btn-secondary">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Enable 2FA</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-group danger-zone">
+                        <h3>Delete Account</h3>
+                        <p>Permanently delete your account and all data</p>
+                        
+                        <div class="setting-action">
+                            <button class="btn btn-danger">
+                                <i class="fas fa-trash"></i>
+                                <span>Delete Account</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Tab navigation
+    const menuItems = document.querySelectorAll('.sidebar-menu li');
+    const profileSections = document.querySelectorAll('.profile-section');
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all items
+            menuItems.forEach(i => i.classList.remove('active'));
+            profileSections.forEach(s => s.classList.remove('active'));
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Show corresponding section
+            const targetSection = document.getElementById(this.dataset.target);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        });
+    });
+    
+    // Copy referral code functionality
+    const copyCodeBtn = document.getElementById('profileCopyCode');
+    const copyLinkBtn = document.getElementById('copyLink');
+    
+    if (copyCodeBtn) {
+        copyCodeBtn.addEventListener('click', function() {
+            const codeText = document.getElementById('profileReferralCode').textContent;
+            copyToClipboard(codeText, this);
+        });
+    }
+    
+    if (copyLinkBtn) {
+        copyLinkBtn.addEventListener('click', function() {
+            const linkText = document.getElementById('referralLink').textContent;
+            copyToClipboard(linkText, this);
+        });
+    }
+    
+    function copyToClipboard(text, button) {
+        const tempInput = document.createElement('input');
+        tempInput.value = text;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        // Change icon temporarily
+        const originalIcon = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        
+        setTimeout(() => {
+            button.innerHTML = originalIcon;
+        }, 2000);
+    }
+</script>
+{% endblock %} 

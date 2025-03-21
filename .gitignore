@@ -1,0 +1,27 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+
+# Environment variables
+.env
+
+# IDE specific files
+.idea/
+.vscode/
+
+# SQLite database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/ 

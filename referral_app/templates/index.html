@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Onference - Grow Your Network{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-content">
+        <h1 class="hero-title">Supercharge Your Referrals</h1>
+        <p class="hero-subtitle">The easiest way to refer friends and get rewarded for growing your network.</p>
+        
+        <div class="hero-cta">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-large">Go to Dashboard</a>
+            {% else %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">Get Started</a>
+                <a href="{{ url_for('login') }}" class="btn btn-secondary btn-large">Login</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="hero-image">
+        <img src="{{ url_for('static', filename='images/referral-illustration.svg') }}" alt="Referral Illustration">
+    </div>
+</section>
+
+<section class="features">
+    <div class="section-header">
+        <h2>Why Choose Onference?</h2>
+        <p>Our platform makes sharing and tracking referrals easier than ever.</p>
+    </div>
+    
+    <div class="feature-cards">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-link"></i>
+            </div>
+            <h3>Easy Sharing</h3>
+            <p>Share your unique referral link via email, social media, or direct message with just one click.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Real-time Tracking</h3>
+            <p>Monitor your referral performance with our intuitive dashboard and real-time analytics.</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h3>Great Rewards</h3>
+            <p>Earn amazing rewards for every successful referral you make through our platform.</p>
+        </div>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="section-header">
+        <h2>How It Works?</h2>
+        <p>Four simple steps to start referring and earning rewards.</p>
+    </div>
+    
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Sign Up</h3>
+            <p>Create your free account on Onference's platform.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Get Your Link</h3>
+            <p>Access your personal referral link from your dashboard.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Share</h3>
+            <p>Share your referral link with friends, family, and colleagues.</p>
+        </div>
+        
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Earn Rewards</h3>
+            <p>Get rewarded when your referrals sign up using your link.</p>
+        </div>
+    </div>
+</section>
+
+<section class="rewards-section">
+    <div class="section-header">
+        <h2>Rewards For You</h2>
+        <p>Here's what you'll receive for successful referrals.</p>
+    </div>
+    
+    <div class="rewards-list">
+        <div class="reward-item">
+            <div class="reward-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="reward-content">
+                <h3>1. $10 Credit</h3>
+                <p>Receive $10 credit for each successful referral who signs up.</p>
+            </div>
+        </div>
+        
+        <div class="reward-item">
+            <div class="reward-icon">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="reward-content">
+                <h3>2. 5% Commission</h3>
+                <p>Earn 5% commission on your referral's first purchase.</p>
+            </div>
+        </div>
+        
+        <div class="reward-item">
+            <div class="reward-icon">
+                <i class="fas fa-award"></i>
+            </div>
+            <div class="reward-content">
+                <h3>3. Premium Features</h3>
+                <p>Unlock premium features after 5 successful referrals.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="peers-section">
+    <div class="section-header">
+        <h2>What Will Your Peers Get?</h2>
+        <p>Benefits for those who join using your referral link.</p>
+    </div>
+    
+    <div class="rewards-list">
+        <div class="reward-item">
+            <div class="reward-icon">
+                <i class="fas fa-tag"></i>
+            </div>
+            <div class="reward-content">
+                <h3>1. 20% Discount</h3>
+                <p>First-time users get a 20% discount on their initial purchase.</p>
+            </div>
+        </div>
+        
+        <div class="reward-item">
+            <div class="reward-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="reward-content">
+                <h3>2. Extended Trial</h3>
+                <p>Access to a 30-day extended trial of premium features.</p>
+            </div>
+        </div>
+        
+        <div class="reward-item">
+            <div class="reward-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="reward-content">
+                <h3>3. Priority Support</h3>
+                <p>Dedicated priority support for the first month after joining.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="terms-section">
+    <div class="section-header">
+        <h2>Terms & Conditions</h2>
+        <p>Important information about our referral program.</p>
+    </div>
+    
+    <div class="terms-list">
+        <div class="term-item">
+            <div class="term-number">1</div>
+            <p>Referral rewards are processed after your referred friend completes registration and verifies their email.</p>
+        </div>
+        
+        <div class="term-item">
+            <div class="term-number">2</div>
+            <p>The maximum number of successful referrals eligible for rewards is 50 per calendar year.</p>
+        </div>
+        
+        <div class="term-item">
+            <div class="term-number">3</div>
+            <p>Self-referrals or creating multiple accounts to generate referrals is prohibited.</p>
+        </div>
+        
+        <div class="term-item">
+            <div class="term-number">4</div>
+            <p>Onference reserves the right to modify or terminate the referral program at any time.</p>
+        </div>
+        
+        <div class="term-item">
+            <div class="term-number">5</div>
+            <p>All referral credits expire 12 months after they are issued if not used.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready to Start Referring?</h2>
+        <p>Join thousands of users who are already earning rewards through our referral program.</p>
+        
+        <div class="cta-buttons">
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Go to Dashboard</a>
+            {% else %}
+                <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started Now</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %} 

@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Onference{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Welcome, {{ current_user.username }}!</h1>
+        <p class="last-updated">Last updated: <span id="lastUpdated"></span></p>
+    </div>
+    
+    <div class="dashboard-overview">
+        <div class="overview-card total-referrals">
+            <div class="card-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="card-content">
+                <h3>Total Referrals</h3>
+                <p class="card-value">{{ referrals|length }}</p>
+            </div>
+        </div>
+        
+        <div class="overview-card pending-referrals">
+            <div class="card-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="card-content">
+                <h3>Pending Referrals</h3>
+                <p class="card-value">{{ pending_count }}</p>
+            </div>
+        </div>
+        
+        <div class="overview-card completed-referrals">
+            <div class="card-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="card-content">
+                <h3>Completed Referrals</h3>
+                <p class="card-value">{{ completed_count }}</p>
+            </div>
+        </div>
+        
+        <div class="overview-card total-rewards">
+            <div class="card-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <div class="card-content">
+                <h3>Total Rewards</h3>
+                <p class="card-value">${{ total_rewards }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-content">
+        <div class="content-section share-section">
+            <div class="section-header">
+                <h2>Share Your Referral Link</h2>
+                <p>Invite friends and earn rewards for every successful referral</p>
+            </div>
+            
+            <div class="referral-code-container">
+                <div class="referral-code">
+                    <span id="referralLink">{{ request.host_url }}register?ref={{ current_user.referral_code }}</span>
+                    <button id="copyCode" class="btn btn-icon" title="Copy to clipboard">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                
+                <div class="copy-message" id="copyMessage">Copied to clipboard!</div>
+            </div>
+            
+            <div class="share-options">
+                <button class="share-btn email-share">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </button>
+                
+                <button class="share-btn facebook-share">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>Facebook</span>
+                </button>
+                
+                <button class="share-btn twitter-share">
+                    <i class="fab fa-twitter"></i>
+                    <span>Twitter</span>
+                </button>
+                
+                <button class="share-btn whatsapp-share">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="content-section referrals-section">
+            <div class="section-header">
+                <h2>Your Referrals</h2>
+                <div class="filter-options">
+                    <select id="statusFilter" class="form-select">
+                        <option value="all">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="referrals-list">
+                {% if referral_records %}
+                    <div class="referrals-table">
+                        <div class="table-header">
+                            <div class="th">User</div>
+                            <div class="th">Date</div>
+                            <div class="th">Status</div>
+                            <div class="th">Reward</div>
+                        </div>
+                        
+                        <div class="table-body">
+                            {% for record in referral_records %}
+                                {% set referred_user = record.referred %}
+                                <div class="table-row">
+                                    <div class="td user-info">
+                                        <div class="user-avatar">{{ referred_user.username[0]|upper }}</div>
+                                        <div class="user-name">{{ referred_user.username }}</div>
+                                    </div>
+                                    <div class="td">{{ record.created_at.strftime('%b %d, %Y') }}</div>
+                                    <div class="td">
+                                        <span class="status-badge {{ record.status }}">{{ record.status|title }}</span>
+                                    </div>
+                                    <div class="td">
+                                        {% if record.status == 'completed' %}
+                                            $5.00
+                                        {% elif record.status == 'pending' %}
+                                            <form action="{{ url_for('update_referral_status', referral_id=record.id) }}" method="POST" class="status-form">
+                                                <input type="hidden" name="status" value="completed">
+                                                <button type="submit" class="btn btn-small btn-primary">Mark Completed</button>
+                                            </form>
+                                        {% else %}
+                                            Pending
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-users-slash"></i>
+                        </div>
+                        <h3>No Referrals Yet</h3>
+                        <p>Share your referral link to start earning rewards</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Update last updated time
+    const lastUpdatedElem = document.getElementById('lastUpdated');
+    lastUpdatedElem.textContent = new Date().toLocaleString();
+    
+    // Copy referral code functionality
+    const referralCode = document.getElementById('referralCode');
+    const copyBtn = document.getElementById('copyCode');
+    const copyMessage = document.getElementById('copyMessage');
+    
+    copyBtn.addEventListener('click', function() {
+        const tempInput = document.createElement('input');
+        tempInput.value = referralCode.textContent;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        // Show copy message
+        copyMessage.classList.add('active');
+        setTimeout(() => {
+            copyMessage.classList.remove('active');
+        }, 2000);
+    });
+    
+    // Filter referrals by status
+    const statusFilter = document.getElementById('statusFilter');
+    const tableRows = document.querySelectorAll('.table-row');
+    
+    statusFilter.addEventListener('change', function() {
+        const selectedStatus = this.value;
+        
+        tableRows.forEach(row => {
+            const statusBadge = row.querySelector('.status-badge');
+            const rowStatus = statusBadge.textContent.toLowerCase();
+            
+            if (selectedStatus === 'all' || selectedStatus === rowStatus) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+{% endblock %} 

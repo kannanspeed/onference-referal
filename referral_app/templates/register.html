@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Onference{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>Create Your Account</h2>
+            <p>Join our referral program and start earning rewards</p>
+        </div>
+        
+        <form class="auth-form" method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
+                    <input type="text" id="username" name="username" placeholder="johndoe" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-meter-fill" data-strength="0"></div>
+                    </div>
+                    <div class="strength-text">Password strength: <span>Weak</span></div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="referral_code">Referral Code <span class="optional">(Optional)</span></label>
+                <div class="input-group">
+                    <span class="input-icon"><i class="fas fa-ticket"></i></span>
+                    <input type="text" id="referral_code" name="referral_code" placeholder="Enter referral code if you have one" value="{{ request.args.get('ref', '') }}">
+                </div>
+            </div>
+            
+            <div class="form-agreement">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="agree_terms" name="agree_terms" required>
+                    <label for="agree_terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Simple password strength meter
+    const passwordInput = document.getElementById('password');
+    const strengthMeter = document.querySelector('.strength-meter-fill');
+    const strengthText = document.querySelector('.strength-text span');
+    
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        let strength = 0;
+        
+        if (password.length >= 8) strength += 25;
+        if (password.match(/[a-z]+/)) strength += 25;
+        if (password.match(/[A-Z]+/)) strength += 25;
+        if (password.match(/[0-9]+/)) strength += 25;
+        
+        strengthMeter.style.width = strength + '%';
+        strengthMeter.setAttribute('data-strength', strength);
+        
+        if (strength < 25) {
+            strengthText.textContent = 'Very Weak';
+        } else if (strength < 50) {
+            strengthText.textContent = 'Weak';
+        } else if (strength < 75) {
+            strengthText.textContent = 'Medium';
+        } else {
+            strengthText.textContent = 'Strong';
+        }
+    });
+</script>
+{% endblock %} 
