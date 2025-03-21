@@ -198,4 +198,7 @@ def update_referral_status(referral_id):
 
 if __name__ == '__main__':
     create_tables()  # Create tables before running the app
-    app.run(debug=True, port=5001)  # Using port 5001 instead of default 5000 
+    # Get port from environment variable or use 5001 as default
+    port = int(os.environ.get('PORT', 5001))
+    # In production, listen on all interfaces
+    app.run(host='0.0.0.0', port=port, debug=False) 
